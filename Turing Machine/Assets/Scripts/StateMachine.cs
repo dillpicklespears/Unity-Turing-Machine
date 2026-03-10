@@ -6,16 +6,14 @@ public class StateMachine
 {
     public State state; 
     public List<State> states; 
-    public TuringMachine turingMachine; 
 
-    public StateMachine(TuringMachine turingMachine, List<State> states)
+    public StateMachine(List<State> states)
     {
         this.states = states; 
         this.state = states[0];
-        this.turingMachine = turingMachine; 
     }
 
-    public int Run()
+    public int Run(TuringMachine turingMachine)
     {
         int number = turingMachine.Read(); 
         
