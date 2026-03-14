@@ -1,76 +1,132 @@
-using System.ComponentModel;
-using System; 
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
 public class TuringMachine : MonoBehaviour
 {
-    StateMachine stateMachine; 
+    StateMachine stateMachine;
+    public TapeRenderer tapeRenderer;
+    public TapeHead head;
 
-    string tape = "000000000000000000000"; // 21 characters long
-    // List<string> tape = new List<string>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 21 long
-    int headPos = 10; 
+    [SerializeField] private TuringWriteVFX writeVFX;
 
-    public TuringMachine()
-    {
-        
-    }
+    string tape = "000000000000000000000";
+    int headPos = 10;
 
     private void Start()
     {
         List<State> busyBeaverStates = new List<State>()
         {
-        new State(
-            new List<int>(){1, 1}, 
-            new List<char>(){'L', 'R'}, 
-            new List<int>(){1, 2}),
-        new State(
-            new List<int>(){1, 1}, 
-            new List<char>(){'R', 'L'}, 
-            new List<int>(){0, 1}),
-        new State(
-            new List<int>(){1, 1}, 
-            new List<char>(){'R', 'N'}, 
-            new List<int>(){1, -1})
+            
+
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'L', 'R'},
+                new List<int>(){1, 2}),
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'R', 'L'},
+                new List<int>(){0, 1}),
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'R', 'N'},
+                new List<int>(){1, -1})
         };
-        StateMachine busyBeaver = new StateMachine(busyBeaverStates); 
 
-        stateMachine = busyBeaver; // this would preferably have a way to be changed around
-
-        Run(); // this would be preferablly be ran with an input of some sort
+        stateMachine = new StateMachine(busyBeaverStates);
+        SyncTapeToVisuals();
+        if (head != null)
+            head.MoveTo(headPos);
+        Run();
     }
 
-    // this would preferably have a way to increment and stop every so often
-    // right now just a proof of concept
     public void Run()
     {
-        while(stateMachine.Run(this) > 0)
-        {
-            Debug.Log(tape); 
-        }
+        StartCoroutine(RunRoutine());
     }
-    
+
+    private System.Collections.IEnumerator RunRoutine()
+    {
+        int result = 1;
+
+        while (result > 0)
+        {
+            result = stateMachine.Run(this);
+            Debug.Log($"Tape: {tape} | Head: {headPos}");
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        Debug.Log("Machine halted.");
+    }
+
     public int Read()
     {
-        int number = Int32.Parse(tape.Substring(headPos, 1));  
-        return number; 
+        if (headPos < 0 || headPos >= tape.Length)
+        {
+            Debug.LogError($"Head position {headPos} is out of bounds.");
+            return 0;
+        }
+
+        return int.Parse(tape.Substring(headPos, 1));
     }
 
     public void Write(int number)
     {
-        string stringNumber = number + ""; 
-        tape = tape.Remove(headPos, 1).Insert(headPos, stringNumber); 
+        string stringNumber = number.ToString();
+        tape = tape.Remove(headPos, 1).Insert(headPos, stringNumber);
+
+        if (tapeRenderer != null && headPos >= 0 && headPos < tapeRenderer.cells.Count)
+        {
+            tapeRenderer.cells[headPos].SetValue(number);
+        }
+
+        if (writeVFX != null)
+            writeVFX.OnWrite(number);
     }
 
     public void Move(char direction)
     {
-        if(direction == 'L')
+        int newHeadPos = headPos;
+
+        switch (direction)
         {
-            headPos --;// move left
+            case 'L':
+                newHeadPos--;
+                break;
+
+            case 'R':
+                newHeadPos++;
+                break;
+
+            case 'N':
+                break;
+
+            default:
+                Debug.LogWarning($"Unknown move direction: {direction}");
+                return;
         }
-        else if(direction == 'R')
+
+        if (newHeadPos < 0 || newHeadPos >= tape.Length)
         {
-            headPos ++;// move right
+            Debug.LogError($"Cannot move {direction}. New head position {newHeadPos} is out of bounds.");
+            return;
+        }
+
+        headPos = newHeadPos;
+
+        if (head != null)
+            head.MoveTo(headPos);
+
+        Debug.Log($"Moved {direction}. Head is now at {headPos}");
+    }
+    public void SyncTapeToVisuals()
+    {
+        if (tapeRenderer == null) return;
+
+        for (int i = 0; i < tape.Length && i < tapeRenderer.cells.Count; i++)
+        {
+            int value = tape[i] == '1' ? 1 : 0;
+            tapeRenderer.cells[i].SetValue(value);
         }
     }
 }
