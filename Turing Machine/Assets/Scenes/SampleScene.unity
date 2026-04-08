@@ -5152,6 +5152,9 @@ MonoBehaviour:
   tapeRenderer: {fileID: 2010285545}
   head: {fileID: 383260542}
   writeVFX: {fileID: 504344485}
+  machineInstructions: "\n    state: 0\n    write: 1,1\n    move: L, R\n    changeState:
+    1, 2\n\n    state: 1\n    write: 1, 1\n    move: R, L\n    changeState: 0, 1\n\n   
+    state: 2\n    write: 1, 1\n    move: R, N\n    changeState: 1, -1\n    "
 --- !u!135 &504344481
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5407,7 +5410,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -5433,7 +5436,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052616, y: 0, z: 0, w: 0.9914449}
-  m_LocalPosition: {x: 9, y: 10, z: -40}
+  m_LocalPosition: {x: 21.52, y: 12.8, z: -48.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

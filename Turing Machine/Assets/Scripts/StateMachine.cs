@@ -32,4 +32,14 @@ public class StateMachine
 
         return -1;
     }
+
+    public string toString()
+    {
+        string returnString = ""; 
+        for(int i = 0; i < states.Count; i++)
+        {
+            returnString += "state " + i + ": " + states[i].toString() + "\n"; 
+        }
+        return returnString; 
+    }
 }

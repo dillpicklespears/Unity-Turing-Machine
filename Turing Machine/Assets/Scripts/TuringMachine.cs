@@ -11,10 +11,29 @@ public class TuringMachine : MonoBehaviour
     [SerializeField] private TuringWriteVFX writeVFX;
 
     string tape = "000000000000000000000";
+
+    public string machineInstructions = 
+    @"
+    state: 0
+    write: 1,1
+    move: L, R
+    changeState: 1, 2
+
+    state: 1
+    write: 1, 1
+    move: R, L
+    changeState: 0, 1
+
+    state: 2
+    write: 1, 1
+    move: R, N
+    changeState: 1, -1
+    ";
     int headPos = 10;
 
     private void Start()
     {
+        /*
         List<State> busyBeaverStates = new List<State>()
         {
             
@@ -34,6 +53,9 @@ public class TuringMachine : MonoBehaviour
         };
 
         stateMachine = new StateMachine(busyBeaverStates);
+        */ 
+        stateMachine = new StateMachine(TextReader.Read(machineInstructions)); 
+        Debug.Log(stateMachine.toString());
         SyncTapeToVisuals();
         if (head != null)
             head.MoveTo(headPos);
@@ -42,6 +64,7 @@ public class TuringMachine : MonoBehaviour
 
     public void Run()
     {
+        //stateMachine = new StateMachine(TextReader.Read(machineInstructions)); 
         StartCoroutine(RunRoutine());
     }
 

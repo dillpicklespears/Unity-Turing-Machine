@@ -2,6 +2,40 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+/*
+state: 0
+write: 1,1
+move: L, R
+changeState: 1, 2
+
+state: 1
+write: 1, 1
+move: R, L
+changeState: 0, 1
+
+state: 2
+write: 1, 1
+move: R, N
+changeState: 1, -1
+
+
+
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'L', 'R'},
+                new List<int>(){1, 2}),
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'R', 'L'},
+                new List<int>(){0, 1}),
+            new State(
+                new List<int>(){1, 1},
+                new List<char>(){'R', 'N'},
+                new List<int>(){1, -1})
+
+*/
+
+
 public class State
 {
     public List<int> writeRule;
@@ -45,5 +79,12 @@ public class State
         // return -1 if halt
         int nextState = changeStateRule[number];
         return nextState; 
+    }
+
+    public string toString()
+    {
+        return "write:" + writeRule[0] + "," + writeRule[1] + "\n" +
+        "move:" + moveRule[0] + "," + moveRule[1] + "\n" + 
+        "changeState:" + changeStateRule[0] + "," + changeStateRule[1] + "\n";
     }
 }

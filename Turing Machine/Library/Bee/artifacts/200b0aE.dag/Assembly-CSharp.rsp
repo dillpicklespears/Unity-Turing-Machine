@@ -357,6 +357,7 @@
 "Assets/Scripts/TapeCell.cs"
 "Assets/Scripts/TapeHead.cs"
 "Assets/Scripts/TapeRenderer.cs"
+"Assets/Scripts/TextReader.cs"
 "Assets/Scripts/TuringMachine.cs"
 "Assets/Scripts/TuringWriteVFX.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs"
